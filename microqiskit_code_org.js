@@ -1,5 +1,7 @@
 // This is a JavaScript version of Qiskit. For the full version, see qiskit.org.
 // It has many more features, and access to real quantum computers.
+// 1/sqrt(2) will come in handy
+const r2 = 0.70710678118;
 function QuantumCircuit(n, m) {
   this.numQubits = n;
   this.numClbits = m;
@@ -66,6 +68,47 @@ function QuantumCircuit(n, m) {
   return this;
 };
 
+// Simulates the given circuit `qc`, and outputs the results in the form
+// specified by `shots` and `get`.
+simulate = function (qc, shots, get) {
+  // For two elements of the statevector, x and y, return (x+y)/sqrt(2)
+  // and (x-y)/sqrt(2)
+  const superpose = function (x, y) {
+    let sup = [
+      [(x[0] + y[0]) * r2, (x[1] + y[1]) * r2],
+      [(x[0] - y[0]) * r2, (x[1] - y[1]) * r2]
+    ];
+    return sup;
+  }
+
+  /// For two elements of the statevector, x and y, return
+  /// return cos(theta/2)*x - i*sin(theta/2)*y and
+  /// cos(theta/2)*y - i*sin(theta/2)*x
+  const turn = function(x, y, theta) {
+    let trn = [
+      [
+        x[0] * cos(theta / 2) + y[1] * sin(theta / 2),
+        x[1] * cos(theta / 2) - y[0] * sin(theta / 2)
+      ],
+      [
+        y[0] * cos(theta / 2) + x[1] * sin(theta / 2),
+        y[1] * cos(theta / 2) - x[0] * sin(theta / 2)
+      ]
+    ];
+    return trn;
+  }
+
+  // Initialize a 2^n element statevector. Complex numbers are expressed as a
+  // list of two real numbers.
+  //let k = List<List>.generate(pow(2, qc.numQubits), (j) => ([0, 0]));
+  let k = [];
+  for (j = 0; j < Math.pow(2, qc.numQubits); j++) {
+    k.push([0, 0]);
+  }
+
+
+}
+
 
 // Usage:
 var qc = new QuantumCircuit(3, 3);
@@ -78,3 +121,5 @@ qc.ry(Math.PI / 4, 1);
 qc.x(0);
 qc.measure(1, 1);
 console.log(qc.data);
+
+simulate(qc, 1024, "counts");
