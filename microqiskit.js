@@ -30,28 +30,28 @@ class QuantumCircuit {
 
   // Applies an x gate to the given qubit.
   x(q) {
-    this.data.push(['x', q]);
+    this.data.push('x', q);
     return this;
   }
 
 
   // Applies an rx gate to the given qubit by the given angle.
   rx(theta, q) {
-    this.data.push(['rx', theta, q]);
+    this.data.push('rx', theta, q);
     return this;
   }
 
 
   // Applies an h gate to the given qubit.
   h(q) {
-    this.data.push(['h', q]);
+    this.data.push('h', q);
     return this;
   }
 
 
   // Applies a cx gate to the given source and target qubits.
   cx(s, t) {
-    this.data.push(['cx', s, t]);
+    this.data.push('cx', s, t);
     return this;
   }
 
@@ -64,7 +64,7 @@ class QuantumCircuit {
   if (b >= this.numClbits) {
     throw 'Index for output bit out of range.';
   }
-  this.data.push(['m', q, b]);
+  this.data.push('m', q, b);
   return this;
 }
 
