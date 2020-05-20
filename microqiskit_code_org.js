@@ -173,7 +173,7 @@ var simulate = function (qc, shots, get) {
       // The following loops allow us to loop over all of these pairs.
       // for (var i0 in List<int>.generate(pow(2, l), (ia) => ia)) {
       //   for (var i1 in List<int>.generate(pow(2, (h - l - 1)), (ib) => ib)) {
-      for (var i0 = 0; i0 < Math.pow(2, j); i0++) {
+      for (var i0 = 0; i0 < Math.pow(2, l); i0++) {
         for (var i1 = 0; i1 < Math.pow(2, (h - l - 1)); i1++) {
           for (var i2 = 0; i2 < Math.pow(2, (qc.numQubits - h - 1)); i2++) {
             // Index corresponding to bit string for which digit `s` is `1` and digit `t` is '0'.
@@ -315,10 +315,9 @@ qc.measure(0, 0);
 qc.measure(1, 1);
 qc.measure(2, 2);
 console.log(qc.data);
-
 console.log(simulate(qc, 5, "counts"));
 
-/*
+
 var psiMinus = new QuantumCircuit(2, 2);
 psiMinus.h(0);
 psiMinus.x(1);
@@ -330,7 +329,7 @@ psiMinus.measure(1, 1);
 var psiMinusStatevector = simulate(psiMinus, 0, 'statevector');
 console.log('psiMinusStatevector: ' + psiMinusStatevector);
 console.log(simulate(psiMinus, 5, 'counts'));
-*/
+
 
 var ghz = new QuantumCircuit(3, 3);
 ghz.h(0);
@@ -343,4 +342,3 @@ ghz.measure(2, 2);
 var ghzStatevector = simulate(ghz, 0, 'statevector');
 console.log('ghzStatevector: ' + ghzStatevector);
 console.log(simulate(ghz, 5, 'counts'));
-
