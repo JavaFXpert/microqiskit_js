@@ -237,7 +237,7 @@ var simulate = function (qc, shots, get) {
     // The `shots` samples that result are then collected in the list `m`.
     if (get == 'counts' || get == 'memory') {
       var me = [];
-      for (var i = 0; i < shots; i++) {
+      for (var idx = 0; idx < shots; idx++) {
         var cumu = 0.0;
         var un = true;
         var r = Math.random();
@@ -247,13 +247,16 @@ var simulate = function (qc, shots, get) {
           if (r < cumu && un) {
             // When the `j`th element is chosen, get the n bit representation of j.
             //var rawOut = j.toRadixString(2).padLeft(qc.numQubits, '0');
-            var rawOut = j.toString(2).padStart(qc.numQubits, '0');
+            //var rawOut = j.toString(2).padStart(qc.numQubits, '0');
+            var bitStr = j.toString(2);
+            var padStr = Math.pow(10, qc.numQubits - bitStr.length).toString().substr(1, qc.numQubits);
+            var rawOut = padStr + bitStr;
 
             // Convert this into an m bit string, with the order specified by
             // the measure commands
             //var outList = List < String >.generate(qc.numClbits, (i) => ('0'));
             var outList = [];
-            for (i = 0; i < qc.numClbits; i++) {
+            for (var i = 0; i < qc.numClbits; i++) {
               outList.push('0');
             }
 
@@ -267,7 +270,7 @@ var simulate = function (qc, shots, get) {
                 rawOut[qc.numQubits - 1 - outputMap[bit]];
             }
 
-            var out = outList.join();
+            var out = outList.join("");
 
             // Add this to the list of samples
             me.push(out);
@@ -281,8 +284,9 @@ var simulate = function (qc, shots, get) {
       } else {
         // For the counts output, we turn it into a counts dictionary first
         var counts = {};
-        for (var out in me) {
-          if (counts.containsKey(out)) {
+        for (var meIdx = 0; meIdx < me.length; meIdx++) {
+          var out = me[meIdx];
+          if (counts.hasOwnProperty(out)) {
             counts[out] += 1;
           } else {
             counts[out] = 1;
@@ -296,18 +300,47 @@ var simulate = function (qc, shots, get) {
 
 
 // Usage:
-var qc = new QuantumCircuit(2, 2);
+var qc = new QuantumCircuit(3, 3);
 //qc.x(0);
 //qc.rx(Math.PI, 1);
 //qc.x(1);
 qc.h(0);
 qc.h(1);
+qc.h(2);
 //qc.cx(0, 1);
 //qc.z(1)
 //qc.rz(Math.PI / 2, 1);
 //qc.ry(Math.PI / 4, 1);
 qc.measure(0, 0);
 qc.measure(1, 1);
+qc.measure(2, 2);
 console.log(qc.data);
 
-console.log(simulate(qc, 8, "counts"));
+console.log(simulate(qc, 5, "counts"));
+
+/*
+var psiMinus = new QuantumCircuit(2, 2);
+psiMinus.h(0);
+psiMinus.x(1);
+psiMinus.cx(0, 1);
+psiMinus.z(1);
+psiMinus.measure(0, 0);
+psiMinus.measure(1, 1);
+
+var psiMinusStatevector = simulate(psiMinus, 0, 'statevector');
+console.log('psiMinusStatevector: ' + psiMinusStatevector);
+console.log(simulate(psiMinus, 5, 'counts'));
+*/
+
+var ghz = new QuantumCircuit(3, 3);
+ghz.h(0);
+ghz.cx(0, 1);
+ghz.cx(0, 2);
+ghz.measure(0, 0);
+ghz.measure(1, 1);
+ghz.measure(2, 2);
+
+var ghzStatevector = simulate(ghz, 0, 'statevector');
+console.log('ghzStatevector: ' + ghzStatevector);
+console.log(simulate(ghz, 5, 'counts'));
+
