@@ -22,6 +22,10 @@ function QuantumCircuit(n, m) {
   this.data.push(['cx', s, t]);
   return this;
 };
+(QuantumCircuit.prototype).crx = function(theta, s, t) {
+  this.data.push(['crx', theta, s, t]);
+  return this;
+};
 (QuantumCircuit.prototype).rz = function(theta, q) {
   this.h(q);
   this.rx(theta, q);
@@ -108,9 +112,18 @@ var simulate = function (qc, shots, get) {
         }
       }
     }
-    else if (gate[0] == 'cx') {
-      var s = gate[1];
-      var t = gate[2];
+    else if (gate[0] == 'cx' || gate[0] == 'crx') {
+      var s, t, theta;
+      if (gate[0] == 'cx') {
+        s = gate[1];
+        t = gate[2];
+      }
+      else {
+        theta = gate[1];
+        s = gate[2];
+        t = gate[3];
+      }
+
       var l = Math.min(s, t);
       var h = Math.max(s, t);
       for (var i0 = 0; i0 < Math.pow(2, l); i0++) {
@@ -118,10 +131,18 @@ var simulate = function (qc, shots, get) {
           for (var i2 = 0; i2 < Math.pow(2, (qc.numQubits - h - 1)); i2++) {
             var b0 = i0 + Math.pow(2, l + 1) * i1 + Math.pow(2, h + 1) * i2 + Math.pow(2, s);
             var b1 = b0 + Math.pow(2, t);
-            var tmp0 = k[b0];
-            var tmp1 = k[b1];
-            k[b0] = tmp1;
-            k[b1] = tmp0;
+            if (gate[0] == 'cx') {
+              var tmp0 = k[b0];
+              var tmp1 = k[b1];
+              k[b0] = tmp1;
+              k[b1] = tmp0;
+            }
+            else {
+              theta = gate[1];
+              var trn = turn(k[b0], k[b1], theta);
+              k[b0] = trn[0];
+              k[b1] = trn[1];
+            }
           }
         }
       }
@@ -195,6 +216,17 @@ var simulate = function (qc, shots, get) {
 
 
 // Example circuits:
+var crxQc = new QuantumCircuit(2, 2);
+crxQc.h(0);
+crxQc.crx(Math.PI/4, 0, 1 );
+
+crxQc.measure(0, 0);
+crxQc.measure(1, 1);
+var crxQcStatevector = simulate(crxQc, 0, 'statevector');
+console.log('crxQcStatevector: ' + crxQcStatevector);
+console.log(simulate(crxQc, 100, 'counts'));
+
+
 var psiMinus = new QuantumCircuit(2, 2);
 psiMinus.h(0);
 psiMinus.x(1);
