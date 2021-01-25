@@ -111,14 +111,10 @@ var simulate = function (qc, shots, get) {
   var phaseTurn = function(x, y, theta) {
     var phsTrn = [
       [
-        x[0] + y[1],
-        x[1] + y[0]
-        // x[0] * Math.cos(theta) + y[1] * Math.sin(theta),
-        // x[1] * Math.cos(theta) - y[0] * Math.sin(theta)
+        y[0] - x[1],
+        y[1] + x[0]
       ],
       [
-        // y[0] + x[1],
-        // y[1] + x[0]
         y[0] * Math.cos(theta) - x[1] * Math.sin(theta),
         y[1] * Math.cos(theta) + x[0] * Math.sin(theta)
       ]
@@ -150,7 +146,7 @@ var simulate = function (qc, shots, get) {
             var sup = superpose(k[b0], k[b1]);
             k[b0] = sup[0];
             k[b1] = sup[1];
-          } else {
+          } else if (gate[0] == 'rx') {
             var theta = gate[1];
             var trn = turn(k[b0], k[b1], theta);
             k[b0] = trn[0];
@@ -189,19 +185,6 @@ var simulate = function (qc, shots, get) {
             var b10 = i0 + Math.pow(2, s);
             var b11 = b00 + Math.pow(2, s) + Math.pow(2, t);
 
-            // if (gate[0] == 'cx') {
-            //   var tmp0 = k[b0];
-            //   var tmp1 = k[b1];
-            //   k[b0] = tmp1;
-            //   k[b1] = tmp0;
-            // }
-            // else {
-            //   theta = gate[1];
-            //   var trn = turn(k[b0], k[b1], theta);
-            //   k[b0] = trn[0];
-            //   k[b1] = trn[1];
-            // }
-
             if (gate[0] == 'cx') {
               var tmp10 = k[b10];
               var tmp11 = k[b11];
@@ -225,8 +208,8 @@ var simulate = function (qc, shots, get) {
               var phsTrn = phaseTurn(k[b10], k[b11], theta);
               k[b10] = phsTrn[0];
               k[b11] = phsTrn[1];
+              console.log();
             }
-
           }
         }
       }
@@ -300,10 +283,21 @@ var simulate = function (qc, shots, get) {
 
 
 // Example circuits:
+var qft2 = new QuantumCircuit(2, 2);
+qft2.x(0);
+qft2.swap(0,1);
+qft2.h(0);
+qft2.cp(Math.PI/2, 0, 1);
+qft2.h(1);
+var qft2Statevector = simulate(qft2, 0, 'statevector');
+console.log('qft2Statevector: ' + qft2Statevector);
+
+
+
 var cpQc = new QuantumCircuit(2, 2);
 cpQc.h(0);
 cpQc.h(1);
-cpQc.cp(Math.PI/4, 0, 1 );
+cpQc.cp(Math.PI/2, 0, 1 );
 var cpQcStatevector = simulate(cpQc, 0, 'statevector');
 console.log('cpQcStatevector: ' + cpQcStatevector);
 
