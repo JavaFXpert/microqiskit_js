@@ -297,7 +297,7 @@ console.log('qft2Statevector: ' + qft2Statevector);
 var cpQc = new QuantumCircuit(2, 2);
 cpQc.h(0);
 cpQc.h(1);
-cpQc.cp(Math.PI/2, 0, 1 );
+cpQc.cp(Math.PI/8, 0, 1 );
 var cpQcStatevector = simulate(cpQc, 0, 'statevector');
 console.log('cpQcStatevector: ' + cpQcStatevector);
 
