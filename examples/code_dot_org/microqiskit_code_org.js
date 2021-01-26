@@ -169,11 +169,11 @@ var simulate = function (qc, shots, get) {
       var l = Math.min(s, t);
       var h = Math.max(s, t);
       for (var i0 = 0; i0 < Math.pow(2, l); i0++) {
+        // Prevent a swap from executing twice
+        var swapExecuted = false;
+
         for (var i1 = 0; i1 < Math.pow(2, (h - l - 1)); i1++) {
           for (var i2 = 0; i2 < Math.pow(2, (qc.numQubits - h - 1)); i2++) {
-            // var b0 = i0 + Math.pow(2, l + 1) * i1 + Math.pow(2, h + 1) * i2 + Math.pow(2, s);
-            // var b1 = b0 + Math.pow(2, t);
-
             var b00 = i0 + Math.pow(2, l + 1) * i1 + Math.pow(2, h + 1) * i2;
             var b01 = i0 + Math.pow(2, t);
             var b10 = i0 + Math.pow(2, s);
@@ -185,11 +185,12 @@ var simulate = function (qc, shots, get) {
               k[b10] = tmp11;
               k[b11] = tmp10;
             }
-            else if (gate[0] == 'swap') {
+            else if (gate[0] == 'swap' && !swapExecuted) {
               var tmp10 = k[b10];
               var tmp01 = k[b01];
               k[b01] = tmp10;
               k[b10] = tmp01;
+              swapExecuted = true;
             }
             else if (gate[0] == 'crx') {
               theta = gate[1];
@@ -291,19 +292,19 @@ var simulate = function (qc, shots, get) {
 // qft2.h(1);
 // var qft2Statevector = simulate(qft2, 0, 'statevector');
 // console.log('qft2Statevector: ' + qft2Statevector);
-
-
-var qft3 = new QuantumCircuit(3, 3);
-qft3.x(0);
-qft3.swap(0,2);
-qft3.h(0);
-qft3.cp(Math.PI/2, 0, 1);
-qft3.cp(Math.PI/4, 0, 2);
-qft3.h(1);
-qft3.cp(Math.PI/2, 1, 2);
-qft3.h(2);
-var qft3Statevector = simulate(qft3, 0, 'statevector');
-console.log('qft3Statevector: ' + qft3Statevector);
+//
+//
+// var qft3 = new QuantumCircuit(3, 3);
+// qft3.x(0);
+// qft3.swap(0,2);
+// qft3.h(0);
+// qft3.cp(Math.PI/2, 0, 1);
+// qft3.cp(Math.PI/4, 0, 2);
+// qft3.h(1);
+// qft3.cp(Math.PI/2, 1, 2);
+// qft3.h(2);
+// var qft3Statevector = simulate(qft3, 0, 'statevector');
+// console.log('qft3Statevector: ' + qft3Statevector);
 
 
 // var cpQc = new QuantumCircuit(2, 2);
@@ -332,13 +333,13 @@ console.log('qft3Statevector: ' + qft3Statevector);
 // console.log(simulate(phiPlus, 5, 'counts'));
 //
 
-//
-// var swapCirc = new QuantumCircuit(2, 2);
-// swapCirc.x(0);
-// swapCirc.swap(0, 1);
-// var swapCircStatevector = simulate(swapCirc, 0, 'statevector');
-// console.log('swapCirc: ' + swapCircStatevector);
-// console.log(simulate(phiPlus, 5, 'counts'));
+
+var swapCirc = new QuantumCircuit(3, 3);
+swapCirc.x(0);
+swapCirc.swap(0, 2);
+var swapCircStatevector = simulate(swapCirc, 0, 'statevector');
+console.log('swapCirc: ' + swapCircStatevector);
+//console.log(simulate(swapCirc, 5, 'counts'));
 
 
 // var psiMinus = new QuantumCircuit(2, 2);
