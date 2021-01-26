@@ -206,7 +206,7 @@ var simulate = function (qc, shots, get) {
             else if (gate[0] == 'cp') {
               theta = gate[1];
               var phsTrn = phaseTurn(k[b10], k[b11], theta);
-              k[b10] = phsTrn[0];
+              //k[b10] = phsTrn[0];
               k[b11] = phsTrn[1];
               console.log();
             }
