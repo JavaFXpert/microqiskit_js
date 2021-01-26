@@ -110,11 +110,8 @@ var simulate = function (qc, shots, get) {
   };
   var phaseTurn = function(x, y, theta) {
     var phsTrn = [
-      [1,1],
-      [
-        y[0] * Math.cos(theta) - y[1] * Math.sin(theta),
-        y[1] * Math.cos(theta) + y[0] * Math.sin(theta)
-      ]
+      y[0] * Math.cos(theta) - y[1] * Math.sin(theta),
+      y[1] * Math.cos(theta) + y[0] * Math.sin(theta)
     ];
     return phsTrn;
   };
@@ -203,9 +200,7 @@ var simulate = function (qc, shots, get) {
             else if (gate[0] == 'cp') {
               theta = gate[1];
               var phsTrn = phaseTurn(k[b10], k[b11], theta);
-              //k[b10] = phsTrn[0];
-              k[b11] = phsTrn[1];
-              console.log();
+              k[b11] = phsTrn;
             }
           }
         }
@@ -288,15 +283,27 @@ var simulate = function (qc, shots, get) {
 // console.log('qft2Statevector: ' + qft2Statevector);
 
 
-var qft2 = new QuantumCircuit(2, 2);
-qft2.x(0);
-qft2.swap(0,1);
-qft2.h(0);
-qft2.cp(Math.PI/2, 0, 1);
-qft2.h(1);
-var qft2Statevector = simulate(qft2, 0, 'statevector');
-console.log('qft2Statevector: ' + qft2Statevector);
+// var qft2 = new QuantumCircuit(2, 2);
+// qft2.x(0);
+// qft2.swap(0,1);
+// qft2.h(0);
+// qft2.cp(Math.PI/2, 0, 1);
+// qft2.h(1);
+// var qft2Statevector = simulate(qft2, 0, 'statevector');
+// console.log('qft2Statevector: ' + qft2Statevector);
 
+
+var qft3 = new QuantumCircuit(3, 3);
+qft3.x(0);
+qft3.swap(0,2);
+qft3.h(0);
+qft3.cp(Math.PI/2, 0, 1);
+qft3.cp(Math.PI/4, 0, 2);
+qft3.h(1);
+qft3.cp(Math.PI/2, 1, 2);
+qft3.h(2);
+var qft3Statevector = simulate(qft3, 0, 'statevector');
+console.log('qft3Statevector: ' + qft3Statevector);
 
 
 // var cpQc = new QuantumCircuit(2, 2);
