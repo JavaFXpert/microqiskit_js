@@ -176,8 +176,8 @@ var simulate = function (qc, shots, get) {
           for (var i2 = 0; i2 < Math.pow(2, (qc.numQubits - h - 1)); i2++) {
             var b00 = i0 + Math.pow(2, l + 1) * i1 + Math.pow(2, h + 1) * i2;
             var b01 = i0 + Math.pow(2, t);
-            var b10 = i0 + Math.pow(2, s);
-            var b11 = b00 + Math.pow(2, s) + Math.pow(2, t);
+            var b10 = b00 + Math.pow(2, s);
+            var b11 = b10 + Math.pow(2, t);
 
             if (gate[0] == 'cx') {
               var tmp10 = k[b10];
@@ -323,20 +323,20 @@ var simulate = function (qc, shots, get) {
 // console.log('crzQcStatevector: ' + crzQcStatevector);
 
 
-// var phiPlus = new QuantumCircuit(2, 2);
-// phiPlus.h(0);
-// phiPlus.cx(0, 1);
-// phiPlus.measure(0, 0);
-// phiPlus.measure(1, 1);
-// var phiPlusStatevector = simulate(phiPlus, 0, 'statevector');
-// console.log('phiPlusStatevector: ' + phiPlusStatevector);
-// console.log(simulate(phiPlus, 5, 'counts'));
+var phiPlus = new QuantumCircuit(2, 2);
+phiPlus.h(0);
+phiPlus.cx(0, 1);
+phiPlus.measure(0, 0);
+phiPlus.measure(1, 1);
+var phiPlusStatevector = simulate(phiPlus, 0, 'statevector');
+console.log('phiPlusStatevector: ' + phiPlusStatevector);
+console.log(simulate(phiPlus, 5, 'counts'));
 //
 
 
 var swapCirc = new QuantumCircuit(3, 3);
 swapCirc.x(0);
-swapCirc.swap(0, 2);
+swapCirc.swap(0, 1);
 var swapCircStatevector = simulate(swapCirc, 0, 'statevector');
 console.log('swapCirc: ' + swapCircStatevector);
 //console.log(simulate(swapCirc, 5, 'counts'));
@@ -379,4 +379,11 @@ console.log('swapCirc: ' + swapCircStatevector);
 // qc.measure(2, 2);
 // console.log(qc.data);
 // console.log(simulate(qc, 5, "counts"));
+
+var tryPlus = new QuantumCircuit(3, 3);
+tryPlus.h(0);
+tryPlus.h(1);
+tryPlus.cx(0, 2);
+var tryPlusStatevector = simulate(tryPlus, 0, 'statevector');
+console.log('tryPlusStatevector: ' + tryPlusStatevector);
 
